@@ -8,6 +8,23 @@ function MicrophoneLevels() {
     this.channels = {
       	microphonelevels:cordova.addWindowEventHandler("microphonelevels")
     };
+    for (var key in this.channels) {
+        this.channels[key].onHasSubscribersChange = MicrophoneLevels.onHasSubscribersChange;
+    }
+};
+/**
+ * Event handlers for when callbacks get registered.
+ * Keep track of how many handlers we have so we can start and stop the native microphone listener
+ * appropriately.
+ */
+MicrophoneLevels.onHasSubscribersChange = function() {
+  	// If we just registered the first handler, make sure native listener is started.
+  	if (this.numHandlers === 1 && handlers() === 1) {
+      	exec(microphoneLevels.onLevels, microphonelevels.onError, "MicrophoneLevels", "start", []);
+  	} 
+  	else if (handlers() === 0) {
+      	exec(null, null, "MicrophoneLevels", "stop", []);
+  	}
 };
 
 MicrophoneLevels.prototype.start = function() {
