@@ -11,6 +11,7 @@ function MicrophoneLevels() {
     for (var key in this.channels) {
         this.channels[key].onHasSubscribersChange = MicrophoneLevels.onHasSubscribersChange;
     }
+    this.timer = null;
 };
 /**
  * Event handlers for when callbacks get registered.
@@ -29,10 +30,14 @@ MicrophoneLevels.onHasSubscribersChange = function() {
 
 MicrophoneLevels.prototype.start = function() {
     exec(null, onError, "MicrophoneLevels", "start", []]);
+    //startTimer
+    this.timer = window.setInterval(this.levels, 0.03);
 };
 
 MicrophoneLevels.prototype.stop = function() {
     exec(null, onError, "MicrophoneLevels", "stop", []]);
+    //stopTimer
+    window.clearInterval(this.timer);
 };
 
 MicrophoneLevels.prototype.levels = function() {
@@ -41,7 +46,7 @@ MicrophoneLevels.prototype.levels = function() {
 
 var onLevels = function(params) {
     console.log(params);
-    cordova.fireWindowEvent("microphonelevels", info);
+    cordova.fireWindowEvent("microphonelevels", params);
 }
 
 var onError = function(err) {
