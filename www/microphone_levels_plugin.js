@@ -27,4 +27,4 @@ var onError = function(err) {
     console.log(err);
 };
 
-module.exports = new Instrument();
+module.exports = new MicrophoneLevels();
