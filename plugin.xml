@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    id="uk.ac.ox.it.microphone-levels" version="0.0.1">
+    <name>Microphone Levels</name>
+    <description>Resounding Microphone Levels Plugin</description>
+    <license>Apache 2.0</license>
+    <keywords>cordova, microphone, levels, ios</keywords>
+    
+    <js-module src="www/microphone_levels_plugin.js" name="Microphone Levels">
+        <clobbers target="Microphone Levels" />
+    </js-module>
+    
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Microphone Levels">
+                <param name="ios-package" value="CDVMicrophoneLevels"/>
+            </feature>
+        </config-file>
+        <header-file src="src/ios/CDVMicrophoneLevels.h" />
+        <source-file src="src/ios/CDVMicrophoneLevels.m" />
+    </platform>
+    
+</plugin>
