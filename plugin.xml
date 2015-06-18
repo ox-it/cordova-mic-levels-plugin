@@ -6,13 +6,13 @@
     <license>Apache 2.0</license>
     <keywords>cordova, microphone, levels, ios</keywords>
     
-    <js-module src="www/microphone_levels_plugin.js" name="Microphone Levels">
-        <clobbers target="Microphone Levels" />
+    <js-module src="www/microphone_levels_plugin.js" name="MicrophoneLevels">
+        <clobbers target="MicrophoneLevels" />
     </js-module>
     
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
-            <feature name="Microphone Levels">
+            <feature name="MicrophoneLevels">
                 <param name="ios-package" value="CDVMicrophoneLevels"/>
             </feature>
         </config-file>
