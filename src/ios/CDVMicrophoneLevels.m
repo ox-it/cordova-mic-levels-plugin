@@ -34,6 +34,7 @@
 
 -(void)start:(CDVInvokedUrlCommand*)command
 {
+    [self setup:nil];
     if (self.recorder) {
         [self.recorder prepareToRecord];
         self.recorder.meteringEnabled = YES;
