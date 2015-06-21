@@ -13,6 +13,13 @@
 
 -(void)setup:(CDVInvokedUrlCommand*)command
 {
+    NSError *error;
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionMixWithOthers error:&error];
+    
+    if (error) {
+        NSLog(@"Error setting category: %@", [error description]);
+    }
+
     NSURL *url = [NSURL fileURLWithPath:@"/dev/null"];
     
     NSDictionary *settings = [NSDictionary dictionaryWithObjectsAndKeys:
