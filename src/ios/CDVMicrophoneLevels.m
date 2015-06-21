@@ -29,8 +29,6 @@
                               [NSNumber numberWithInt: AVAudioQualityMax],         AVEncoderAudioQualityKey,
                               nil];
     
-    NSError *error;
-    
     self.recorder = [[AVAudioRecorder alloc] initWithURL:url settings:settings error:&error];
     
     if (!self.recorder) {
@@ -57,19 +55,20 @@
 
 -(void)levels:(CDVInvokedUrlCommand*)command
 {
-    [self.recorder updateMeters];
-    NSDictionary *levels =  [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:
-                                        [NSNumber numberWithFloat:[self.recorder averagePowerForChannel:0]],
-                                        [NSNumber numberWithFloat:[self.recorder peakPowerForChannel:0]],
-                                        nil]
-                                forKeys:[NSArray arrayWithObjects:
-                                         @"averagePower",
-                                         @"peakPower",
-                                         nil]
-     ];
-    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:levels];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    
+     [self.commandDelegate runInBackground:^{
+        [self.recorder updateMeters];
+        NSDictionary *levels =  [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:
+                                            [NSNumber numberWithFloat:[self.recorder averagePowerForChannel:0]],
+                                            [NSNumber numberWithFloat:[self.recorder peakPowerForChannel:0]],
+                                            nil]
+                                    forKeys:[NSArray arrayWithObjects:
+                                             @"averagePower",
+                                             @"peakPower",
+                                             nil]
+         ];
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:levels];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+     }];
 }
 
 @end
