@@ -14,7 +14,7 @@
 -(void)setup:(CDVInvokedUrlCommand*)command
 {
     NSError *error;
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionMixWithOthers error:&error];
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionMixWithOthers | AVAudioSessionCategoryOptionDefaultToSpeaker error:&error];
     
     if (error) {
         NSLog(@"Error setting category: %@", [error description]);
