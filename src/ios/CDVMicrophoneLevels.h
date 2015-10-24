@@ -7,8 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AVFoundation/AVFoundation.h>
 #import "Cordova/CDVPlugin.h"
+#import "NVDSP.h"
+#import "NVHighShelvingFilter.h"
+#import "NVLowShelvingFilter.h"
+#import "Novocaine.h"
 
 @interface CDVMicrophoneLevels : CDVPlugin
 {
@@ -18,8 +21,8 @@
 -(void)setup:(CDVInvokedUrlCommand*)command;
 -(void)start:(CDVInvokedUrlCommand*)command;
 -(void)stop:(CDVInvokedUrlCommand*)command;
+-(void)setLowShelfFilterFrequency:(CDVInvokedUrlCommand*)command;
+-(void)setHighShelfFilterFrequency:(CDVInvokedUrlCommand*)command;
 -(void)levels:(CDVInvokedUrlCommand*)command;
-
-@property(nonatomic) AVAudioRecorder *recorder;
 
 @end
