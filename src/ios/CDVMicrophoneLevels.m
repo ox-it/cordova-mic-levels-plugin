@@ -15,14 +15,9 @@ static const float defaultHighShelfFilterFrequency = 3000;
 
 @interface CDVMicrophoneLevels ()
 {
-    AVAudioEngine *_audioEngine;
-    AVAudioUnitEQ *_eq;
-    __block Float32 _currentAmplitude;
     Float32 _peakDB;
     Float32 _averageDB;
-    float _lowShelfFilterFrequency;
-    float _highShelfFilterFrequency;
-    
+    bool _isSetup;
 }
 
 @property (nonatomic, strong) Novocaine *audioManager;
@@ -40,10 +35,10 @@ static const float defaultHighShelfFilterFrequency = 3000;
     if (command) {
         frequency = [(NSNumber *)[command.arguments objectAtIndex:0] floatValue];
     }
-    if (_lowShelfFilterFrequency != frequency) {
-        _lowShelfFilterFrequency = frequency;
-        self.lsf.centerFrequency = _lowShelfFilterFrequency;
+    if (self.lsf.centerFrequency != frequency) {
+        self.lsf.centerFrequency = frequency;
         self.lsf.Q = 0.5f;
+        self.lsf.G = -20.0f;
     }
 }
 
@@ -53,56 +48,58 @@ static const float defaultHighShelfFilterFrequency = 3000;
     if (command) {
         frequency = [(NSNumber *)[command.arguments objectAtIndex:0] floatValue];
     }
-    if (_highShelfFilterFrequency != frequency) {
-        _highShelfFilterFrequency = frequency;
-        self.hsf.centerFrequency = _highShelfFilterFrequency;
+    if (self.hsf.centerFrequency != frequency) {
+        self.hsf.centerFrequency = frequency;
         self.hsf.Q = 0.5f;
+        self.hsf.G = -20.0f;
     }
 }
 
 -(void)setup:(CDVInvokedUrlCommand*)command
 {
-    // init Novocaine audioManager
-    self.audioManager = [Novocaine audioManager];
-    self.audioManager.forceOutputToSpeaker = YES;
-    
-    // setup Highpass filter
-    self.lsf = [[NVLowShelvingFilter alloc] initWithSamplingRate:self.audioManager.samplingRate];
-    self.hsf = [[NVHighShelvingFilter alloc] initWithSamplingRate:self.audioManager.samplingRate];
-    if (!_lowShelfFilterFrequency) [self setLowShelfFilterFrequency:nil];
-    if (!_highShelfFilterFrequency) [self setHighShelfFilterFrequency:nil];
-    
-    //__weak CDVMicrophoneLevels *weakSelf = self;
-    __block float dbVal = 0.0;
-    [self.audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-        //[weakSelf.hsf filterData:data numFrames:numFrames numChannels:numChannels];
-        //[weakSelf.lsf filterData:data numFrames:numFrames numChannels:numChannels];
-        vDSP_vsq(data, 1, data, 1, numFrames*numChannels);
-        float meanVal = 0.0;
-        vDSP_meanv(data, 1, &meanVal, numFrames*numChannels);
-        float one = 1.0;
-        vDSP_vdbcon(&meanVal, 1, &one, &meanVal, 1, 1, 0);
-        dbVal = dbVal + 0.2*(meanVal - dbVal);
+    if (!_isSetup) {
         
-        _peakDB = dbVal;
-    }];
-    [self.audioManager play];
+        // init Novocaine audioManager
+        self.audioManager = [Novocaine audioManager];
+        self.audioManager.forceOutputToSpeaker = YES;
+        
+        // set up filters
+        self.lsf = [[NVLowShelvingFilter alloc] initWithSamplingRate:self.audioManager.samplingRate];
+        self.hsf = [[NVHighShelvingFilter alloc] initWithSamplingRate:self.audioManager.samplingRate];
+        
+        [self setLowShelfFilterFrequency:nil];
+        [self setHighShelfFilterFrequency:nil];
+        
+        __weak CDVMicrophoneLevels *weakSelf = self;
+        __block float dbVal = 0.0;
+        [self.audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+            [weakSelf.hsf filterData:data numFrames:numFrames numChannels:numChannels];
+            // [weakSelf.lsf filterData:data numFrames:numFrames numChannels:numChannels];
+            vDSP_vsq(data, 1, data, 1, numFrames*numChannels);
+            float meanVal = 0.0;
+            vDSP_meanv(data, 1, &meanVal, numFrames*numChannels);
+            float one = 1.0;
+            vDSP_vdbcon(&meanVal, 1, &one, &meanVal, 1, 1, 0);
+            dbVal = dbVal + 0.2*(meanVal - dbVal);
+            _peakDB = dbVal;
+            printf("_peakDB: %f", dbVal);
+        }];
+        _isSetup = YES;
+    }
 }
 
 -(void)start:(CDVInvokedUrlCommand*)command
 {
     [self setup:nil];
-    if (_audioEngine) {
-        NSError *error;
-        //[_audioEngine startAndReturnError:&error];
-        // TODO: handle error
+    if (self.audioManager) {
+        [self.audioManager play];
     }
 }
 
 -(void)stop:(CDVInvokedUrlCommand*)command
 {
-    if (_audioEngine) {
-        [_audioEngine stop];
+    if (self.audioManager) {
+        [self.audioManager pause];
     }
 }
 
