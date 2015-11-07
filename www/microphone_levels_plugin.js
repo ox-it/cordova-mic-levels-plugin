@@ -46,11 +46,11 @@ MicrophoneLevels.prototype.levels = function() {
 };
 
 MicrophoneLevels.prototype.setLowShelfFilterFrequency = function(lowShelfFrequency) {
-    exec(onLevels, onError, "MicrophoneLevels", "setLowShelfFilterFrequency", [lowShelfFrequency]);
+    exec(null, onError, "MicrophoneLevels", "setLowShelfFilterFrequency", [lowShelfFrequency]);
 };
 
 MicrophoneLevels.prototype.setHighShelfFilterFrequency = function(highShelfFrequency) {
-    exec(onLevels, onError, "MicrophoneLevels", "levels", [highShelfFrequency]);
+    exec(null, onError, "MicrophoneLevels", "setHighShelfFilterFrequency", [highShelfFrequency]);
 };
 
 
