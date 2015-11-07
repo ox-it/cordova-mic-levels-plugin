@@ -1,4 +1,4 @@
-cordova.define("uk.ac.ox.it.microphone-levels.MicrophoneLevels", function(require, exports, module) { cordova = require('cordova');
+cordova = require('cordova');
 exec = require('cordova/exec');
 channel = require('cordova/channel');
 
@@ -65,4 +65,3 @@ var onError = function(err) {
 };
 
 module.exports = new MicrophoneLevels();
-});
