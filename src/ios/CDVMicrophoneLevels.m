@@ -15,7 +15,6 @@ static const float defaultHighShelfFilterFrequency = 3000;
 
 @interface CDVMicrophoneLevels ()
 {
-    Float32 _peakDB;
     Float32 _averageDB;
     bool _isSetup;
 }
@@ -81,7 +80,7 @@ static const float defaultHighShelfFilterFrequency = 3000;
             float one = 1.0;
             vDSP_vdbcon(&meanVal, 1, &one, &meanVal, 1, 1, 0);
             dbVal = dbVal + 0.2*(meanVal - dbVal);
-            _peakDB = dbVal;
+            _averageDB = dbVal;
             printf("_peakDB: %f", dbVal);
         }];
         _isSetup = YES;
@@ -108,11 +107,9 @@ static const float defaultHighShelfFilterFrequency = 3000;
     [self.commandDelegate runInBackground:^{
         NSDictionary *levels =  [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:
                                                                      [NSNumber numberWithFloat:(isnan(_averageDB) || isinf(_averageDB))?-100:_averageDB],
-                                                                     [NSNumber numberWithFloat:(isnan(_peakDB) || isinf(_peakDB))?-100:_peakDB],
                                                                      nil]
                                                             forKeys:[NSArray arrayWithObjects:
                                                                      @"averagePower",
-                                                                     @"peakPower",
                                                                      nil]
                                  ];
         
