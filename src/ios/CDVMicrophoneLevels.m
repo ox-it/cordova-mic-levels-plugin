@@ -74,7 +74,7 @@ static const float defaultHighShelfFilterFrequency = 3000;
         __block float dbVal = 0.0;
         [self.audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
             [weakSelf.hsf filterData:data numFrames:numFrames numChannels:numChannels];
-            // [weakSelf.lsf filterData:data numFrames:numFrames numChannels:numChannels];
+            [weakSelf.lsf filterData:data numFrames:numFrames numChannels:numChannels];
             vDSP_vsq(data, 1, data, 1, numFrames*numChannels);
             float meanVal = 0.0;
             vDSP_meanv(data, 1, &meanVal, numFrames*numChannels);
