@@ -79,9 +79,10 @@ static const float defaultHighShelfFilterFrequency = 3000;
             vDSP_meanv(data, 1, &meanVal, numFrames*numChannels);
             float one = 1.0;
             vDSP_vdbcon(&meanVal, 1, &one, &meanVal, 1, 1, 0);
-            dbVal = dbVal + 0.2*(meanVal - dbVal);
+            if (!isnan(meanVal) && !isinf(meanVal)) {
+                dbVal = dbVal + 0.2*(meanVal - dbVal);
+            }
             _averageDB = dbVal;
-            printf("_peakDB: %f", dbVal);
         }];
         _isSetup = YES;
     }
@@ -106,7 +107,7 @@ static const float defaultHighShelfFilterFrequency = 3000;
 {
     [self.commandDelegate runInBackground:^{
         NSDictionary *levels =  [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:
-                                                                     [NSNumber numberWithFloat:(isnan(_averageDB) || isinf(_averageDB))?-100:_averageDB],
+                                                                     [NSNumber numberWithFloat:_averageDB],
                                                                      nil]
                                                             forKeys:[NSArray arrayWithObjects:
                                                                      @"averagePower",
