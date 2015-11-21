@@ -28,7 +28,7 @@ static const float defaultHighShelfFilterFrequency = 3000;
 
 @implementation CDVMicrophoneLevels
 
--(void)setLowShelfFilterFrequency:(CDVInvokedUrlCommand*)command;
+-(void)setLowShelfFilterFrequency:(CDVInvokedUrlCommand*)command
 {
     float frequency = defaultLowShelfFilterFrequency;
     if (command) {
@@ -38,10 +38,12 @@ static const float defaultHighShelfFilterFrequency = 3000;
         self.lsf.centerFrequency = frequency;
         self.lsf.Q = 0.5f;
         self.lsf.G = -20.0f;
+        if (command) [self filters:command];
     }
+    
 }
 
--(void)setHighShelfFilterFrequency:(CDVInvokedUrlCommand*)command;
+-(void)setHighShelfFilterFrequency:(CDVInvokedUrlCommand*)command
 {
     float frequency = defaultHighShelfFilterFrequency;
     if (command) {
@@ -51,7 +53,23 @@ static const float defaultHighShelfFilterFrequency = 3000;
         self.hsf.centerFrequency = frequency;
         self.hsf.Q = 0.5f;
         self.hsf.G = -20.0f;
+        if (command) [self filters:command];
     }
+}
+-(void)filters:(CDVInvokedUrlCommand*)command
+{
+    NSDictionary *filters =  [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:
+                                                                 [NSNumber numberWithFloat:self.lsf.centerFrequency],
+                                                                 [NSNumber numberWithFloat:self.hsf.centerFrequency],
+                                                                 nil]
+                                                        forKeys:[NSArray arrayWithObjects:
+                                                                 @"lsfFrequency",
+                                                                 @"hsfFrequency",
+                                                                 nil]
+                             ];
+    
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:filters];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 -(void)setup:(CDVInvokedUrlCommand*)command

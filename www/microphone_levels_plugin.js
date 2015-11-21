@@ -9,7 +9,7 @@ function MicrophoneLevels() {
           microphonelevels:cordova.addWindowEventHandler("microphonelevels")
     };
     for (var key in this.channels) {
-        this.channels[key].onHasSubscribersChange = MicrophoneLevels.onHasSubscribersChange;
+      //  this.channels[key].onHasSubscribersChange = MicrophoneLevels.onHasSubscribersChange;
     }
     this.timer = null;
 }
@@ -21,7 +21,7 @@ function MicrophoneLevels() {
  */
 MicrophoneLevels.onHasSubscribersChange = function() {
      // If we just registered the first handler, make sure native listener is started.
-     if (this.numHandlers === 1 && handlers() === 1) {
+     if (this.numHandlers === 1 && this.handlers() === 1) {
           exec(microphoneLevels.onLevels, microphonelevels.onError, "MicrophoneLevels", "start", []);
      }
      else if (handlers() === 0) {
@@ -46,17 +46,22 @@ MicrophoneLevels.prototype.levels = function() {
 };
 
 MicrophoneLevels.prototype.setLowShelfFilterFrequency = function(lowShelfFrequency) {
-    exec(null, onError, "MicrophoneLevels", "setLowShelfFilterFrequency", [lowShelfFrequency]);
+    exec(onFilters, onError, "MicrophoneLevels", "setLowShelfFilterFrequency", [lowShelfFrequency]);
 };
 
 MicrophoneLevels.prototype.setHighShelfFilterFrequency = function(highShelfFrequency) {
-    exec(null, onError, "MicrophoneLevels", "setHighShelfFilterFrequency", [highShelfFrequency]);
+    exec(onFilters, onError, "MicrophoneLevels", "setHighShelfFilterFrequency", [highShelfFrequency]);
 };
 
 
 var onLevels = function(params) {
     console.log(params);
     cordova.fireWindowEvent("microphonelevels", params);
+};
+
+var onFilters = function(params) {
+    console.log(params);
+    cordova.fireWindowEvent("microphonefilters", params);
 };
 
 var onError = function(err) {
