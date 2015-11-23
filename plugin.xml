@@ -18,6 +18,16 @@
         </config-file>
         <header-file src="src/ios/CDVMicrophoneLevels.h" />
         <source-file src="src/ios/CDVMicrophoneLevels.m" />
+        <header-file src="src/ios/Novocaine.h" />
+        <source-file src="src/ios/Novocaine.m" />
+        <header-file src="src/ios/NVDSP.h" />
+        <source-file src="src/ios/NVDSP.mm" />
+        <header-file src="src/ios/NVHighShelvingFilter.h" />
+        <source-file src="src/ios/NVHighShelvingFilter.m" />
+        <header-file src="src/ios/NVLowShelvingFilter.h" />
+        <source-file src="src/ios/NVLowShelvingFilter.m" />
+        <framework src="Accelerate.framework" weak="true" />
+        <framework src="AudioToolbox.framework" weak="true" />
     </platform>
     
 </plugin>
