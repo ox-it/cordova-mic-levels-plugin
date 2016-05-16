@@ -766,6 +766,10 @@ OSStatus inputCallback   (void						*inRefCon,
         if( inNumberFrames == 471 )
             inNumberFrames = 470;
 #endif
+        // Similar to the above, this is necessary on some newer devices (e.g. iPhone 6s)
+        if( inNumberFrames == 236 )
+            inNumberFrames = 235;
+
         CheckError( AudioUnitRender(sm.inputUnit, ioActionFlags, inTimeStamp, inOutputBusNumber, inNumberFrames, sm.inputBuffer), "Couldn't render the output unit");
         
         
@@ -1012,11 +1016,3 @@ void sessionInterruptionListener(void *inClientData, UInt32 inInterruption) {
 
 
 @end
-
-
-
-
-
-
-
-
