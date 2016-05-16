@@ -55,7 +55,8 @@ MicrophoneLevels.prototype.setHighShelfFilterFrequency = function(highShelfFrequ
 
 
 var onLevels = function(params) {
-    console.log(params);
+    // console.log(params);
+    logLevelsThrottled(params);
     cordova.fireWindowEvent("microphonelevels", params);
 };
 
@@ -63,6 +64,12 @@ var onFilters = function(params) {
     console.log(params);
     cordova.fireWindowEvent("microphonefilters", params);
 };
+
+var logLevels = function (params) {
+    console.log(params);
+};
+
+var logLevelsThrottled = _.throttle(logLevels, 500);
 
 var onError = function(err) {
     console.log("Error");
