@@ -16,6 +16,9 @@
                 <param name="ios-package" value="CDVMicrophoneLevels"/>
             </feature>
         </config-file>
+        <config-file target="*-Info.plist" parent="NSMicrophoneUsageDescription">
+          <string>to play the instrument</string>
+        </config-file>
         <header-file src="src/ios/CDVMicrophoneLevels.h" />
         <source-file src="src/ios/CDVMicrophoneLevels.m" />
         <header-file src="src/ios/Novocaine.h" />
